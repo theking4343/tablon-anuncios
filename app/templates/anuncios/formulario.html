@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if anuncio else 'Nuevo' }} anuncio{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-3">{{ 'Editar' if anuncio else 'Nuevo' }} anuncio</h2>
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Título</label>
+        <input type="text" name="titulo" class="form-control" maxlength="150"
+               value="{{ anuncio.titulo if anuncio else '' }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contenido</label>
+        <textarea name="contenido" class="form-control" rows="5" required>{{ anuncio.contenido if anuncio else '' }}</textarea>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Categoría</label>
+          <select name="categoria_id" class="form-select" required>
+            {% for c in categorias %}
+            <option value="{{ c.id }}"
+              {% if anuncio and anuncio.categoria_id == c.id %}selected{% endif %}>
+              {{ c.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Usuario (autor)</label>
+          <select name="usuario_id" class="form-select" required>
+            {% for u in usuarios %}
+            <option value="{{ u.id }}"
+              {% if anuncio %}
+                {% if anuncio.usuario_id == u.id %}selected{% endif %}
+              {% elif u.id == current_user.id %}selected{% endif %}>
+              {{ u.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-success">Guardar</button>
+      <a href="{{ url_for('anuncios.lista') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
